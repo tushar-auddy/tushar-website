@@ -13,6 +13,14 @@ Open http://localhost:3000. Production: `npm run build` generates the static sit
 
 ## Write and publish
 
+### GitHub Pages
+
+The workflow in `.github/workflows/deploy.yml` builds and deploys every push to `main`. In the GitHub repository, choose **Settings → Pages → Source → GitHub Actions** once to enable deployment. The website URL is `https://tushar-auddy.github.io/tushar-website/`.
+
+The workflow supplies `NEXT_PUBLIC_BASE_PATH=/tushar-website` and `NEXT_PUBLIC_SITE_URL=https://tushar-auddy.github.io/tushar-website`. Local development continues to use `/`. Images, fonts, navigation, and metadata support both deployment paths. If the repository or domain changes, update these workflow values.
+
+### Authoring
+
 - Open `/studio/` to compose, preview, save drafts, and publish **on the current device**. These posts use localStorage; they are not shared with other visitors and are not a secure admin CMS. Browser storage can be cleared, so download JSON backups regularly. Backups can be restored using Import backup.
 - Export a story as Markdown for safekeeping or use in another CMS.
 - To publish site-wide, add the article to `lib/articles.ts` and rebuild/redeploy. The static article pages, journal, category counts, and sitemap update automatically. Set `sample: true` only for illustrative starter stories. For a real published story omit `sample` and set `status: 'published'`.
