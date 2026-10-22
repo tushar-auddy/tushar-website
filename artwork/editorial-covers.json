@@ -1,0 +1,41 @@
+{
+  "method": "Built-in image_gen tool; original conceptual editorial illustrations, converted to WebP for website delivery",
+  "covers": [
+    {
+      "slug": "bluesky-launches-saved-post-feature",
+      "source": "exec-bb6c79ec-e531-4b9a-88d3-f7b5ee408fb5.png",
+      "file": "bluesky-bookmarks-editorial.webp",
+      "alt": "Conceptual illustration of a blue paper butterfly above saved post cards wrapped in a bookmark ribbon",
+      "prompt": "Create one premium editorial blog cover, wide landscape 3:2 composition, for an article about Bluesky launching private saved-post bookmarks. Sophisticated photorealistic conceptual still life: a luminous cobalt blue butterfly-shaped paper sculpture hovering above a beautifully crafted blue bookmark ribbon and stacked translucent social post cards on a pale cool studio surface. No readable UI, no lettering, no words, no watermark. Precise paper texture, soft daylight, gentle shadows, restrained deep navy and sky blue palette, a subtle cloudlike background. Strong clear central subject, visually interesting editorial art direction, generous breathing room, suitable for both a wide hero crop and a small blog card. This is conceptual editorial illustration, not a screenshot.",
+      "savedPath": "E:\\Websites\\tushar-website\\public\\images\\bluesky-bookmarks-editorial.webp",
+      "bytes": 150584
+    },
+    {
+      "slug": "google-photos-adds-conversational-ai-editing",
+      "source": "exec-485c020f-7b62-4fd5-87f8-bb68e23e1539.png",
+      "file": "google-photos-ai-editorial.webp",
+      "alt": "Conceptual illustration of a smartphone with a mountain lake photograph, floating image variations and an AI editing sparkle",
+      "prompt": "Create one premium editorial blog cover, wide landscape 3:2 composition, for an article about Google Photos conversational AI image editing. Photorealistic conceptual still life: a sleek unbranded smartphone tilted on a pale stone surface displaying a beautiful mountain lake photograph, a few floating translucent photographic frames and a subtle luminous four-point editing sparkle nearby. No readable text, no logos, no fabricated app controls, no watermark. Thoughtful editorial photography with precise glass reflections, navy shadows, soft natural daylight, touches of lavender and muted cyan, sophisticated uncluttered arrangement. The photo and light convey an image being creatively enhanced through AI. Strong central composition suitable for a blog hero and thumbnail.",
+      "savedPath": "E:\\Websites\\tushar-website\\public\\images\\google-photos-ai-editorial.webp",
+      "bytes": 233340
+    },
+    {
+      "slug": "using-narrative-to-create-impactful-designs",
+      "source": "exec-8a641289-b3ee-40ef-a482-675989d81366.png",
+      "file": "narrative-design-editorial.webp",
+      "alt": "A miniature paper landscape rising from an open book, with a navy path connecting arches and architectural scenes",
+      "prompt": "Create one premium editorial blog cover, wide landscape 3:2 composition, about using narrative to create impactful designs. A sophisticated tactile miniature paper landscape built from layered ivory and deep navy sheets, a continuous elegant blue path weaving through three sculptural architectural scenes from an open notebook into a softly lit horizon, symbolizing a coherent user journey and visual storytelling. Art directed editorial still-life photography, tangible paper fibers, rich subtle shadows, pale warm neutral backdrop, restrained navy and dusty blue accents. No words, no lettering, no logos, no watermark. Keep the central subject clear at small thumbnail scale and allow safe margins for wide cropping. Professional creative design publication aesthetic.",
+      "savedPath": "E:\\Websites\\tushar-website\\public\\images\\narrative-design-editorial.webp",
+      "bytes": 159456
+    },
+    {
+      "slug": "the-science-behind-typography",
+      "source": "exec-cca00348-cb64-4034-b0b4-c9a5462b8fdf.png",
+      "file": "typography-design-editorial.webp",
+      "alt": "Sculptural serif letterforms in metal and ivory arranged on a navy letterpress design desk",
+      "prompt": "Create one premium editorial blog cover, wide landscape 3:2 composition, about the science of typography and its impact on design. Beautiful tactile letterpress still life: large sculptural uppercase A and lowercase a, a mix of elegant serif and geometric sans-serif letterforms as physical metal and matte ivory objects, aligned on subtle baseline guide marks across a deep navy and cream desk. A few smaller abstract typographic forms, carefully controlled spacing and hierarchy. Photorealistic macro editorial studio photography, directional soft light revealing grain, brushed metal and paper texture. Navy, warm ivory and a small muted brass accent. No words or sentences beyond individual A and a letterforms, no logos, no watermark. Sophisticated design-magazine cover image, strong central composition, suitable for wide hero and thumbnail.",
+      "savedPath": "E:\\Websites\\tushar-website\\public\\images\\typography-design-editorial.webp",
+      "bytes": 184874
+    }
+  ]
+}
