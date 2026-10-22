@@ -1,0 +1,76 @@
+/* Site footer: a deep-navy close that continues the contact section's palette. */
+.site-footer{--footer-bg:#1a2848;--footer-muted:#9aa6c4;--footer-line:#34446b;position:relative;overflow:hidden;background:var(--footer-bg);color:#eef1f8;border-top:3px solid #b7c9ef}
+.site-footer:after{content:'✳';position:absolute;right:-30px;top:-50px;font-size:240px;line-height:1;color:#ffffff08;pointer-events:none}
+.site-footer .container{position:relative;z-index:1}
+
+/* Statement row */
+.site-footer-main{display:flex;align-items:center;justify-content:space-between;gap:40px;padding-block:56px 44px}
+.site-footer-brand{display:flex;align-items:center;gap:26px}
+.site-footer-brand .brand-monogram{width:64px;height:64px;font-size:38px;border-radius:15px 3px 15px 3px;background:#b7c9ef;color:var(--footer-bg)}
+.site-footer-brand .brand-monogram>span:first-child{color:#4d5f90}
+.site-footer-brand .monogram-corner{background:#eef1f8;border-color:var(--footer-bg)}
+.site-footer-brand .header-brand:hover .brand-monogram{transform:rotate(-5deg)}
+.site-footer-brand p{margin:0 0 12px;font-size:clamp(24px,2.6vw,36px);line-height:1.15;letter-spacing:-1px}
+.site-footer-brand em{font-style:normal;color:#b7c9ef}
+.site-footer-status{display:inline-flex;align-items:center;gap:9px;font-size:13px;color:var(--footer-muted)}
+.site-footer-status .status-dot{background:#8fe0b0;box-shadow:0 0 0 3px #8fe0b02b;animation:footer-pulse 2.4s ease-in-out infinite}
+@keyframes footer-pulse{50%{box-shadow:0 0 0 6px #8fe0b000}}
+
+.site-footer-mail{display:inline-flex;align-items:center;gap:18px;padding:10px 10px 10px 26px;border-radius:999px;background:#b7c9ef;color:var(--footer-bg);font-size:16px;font-weight:500;white-space:nowrap;transition:background .2s,transform .2s}
+.site-footer-mail span{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:var(--footer-bg);color:#b7c9ef;transition:transform .3s}
+.site-footer-mail:hover{background:#d3def6;transform:translateY(-2px)}
+.site-footer-mail:hover span{transform:rotate(45deg)}
+
+/* Links row */
+.site-footer-links{display:flex;align-items:center;flex-wrap:wrap;gap:14px 34px;padding-block:24px;border-top:1px solid var(--footer-line)}
+.site-footer-links a{position:relative;display:inline-flex;align-items:center;gap:8px;font-size:15px;color:#c9d1e5;transition:color .2s}
+.site-footer-links a:after{content:'';position:absolute;left:0;right:0;bottom:-5px;height:1px;background:#b7c9ef;transform:scaleX(0);transform-origin:left;transition:transform .25s}
+.site-footer-links a:hover{color:#fff}
+.site-footer-links a:hover:after{transform:scaleX(1)}
+.site-footer-links a:last-child{margin-left:auto}
+
+.site-footer-bottom{display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid var(--footer-line);padding-block:18px 24px;font-size:12px;color:var(--footer-muted)}
+.site-footer-bottom p{margin:0}
+.site-footer-sep{margin-inline:6px;color:#4a5c8a}
+.site-footer-credit{color:#c9d1e5;transition:color .2s}
+.site-footer-credit:hover{color:#fff}
+.site-footer-top{display:inline-flex;align-items:center;gap:10px;color:#c9d1e5;white-space:nowrap}
+.site-footer-top span{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;border:1px solid #4a5c8a;transition:transform .25s,background .25s}
+.site-footer-top:hover span{transform:translateY(-2px);background:#b7c9ef;color:var(--footer-bg);border-color:#b7c9ef}
+.site-footer a:focus-visible{outline-color:#b7c9ef}
+
+/* Light contact section, used where a navy band would sit directly on the navy footer. */
+.contact-section.contact-light{background:#edf0f7;color:var(--ink);border-top:1px solid var(--line)}
+.contact-light:after{border-color:#d3d9e6}
+.contact-light .eyebrow.light{color:var(--navy)}
+.contact-light .eyebrow.light span{background:var(--navy)}
+.contact-light .contact-inner h2 em{color:var(--navy)}
+.contact-light .contact-inner p{color:#5f6a80}
+.contact-light .contact-circle{border-color:#a2a8b9;color:var(--navy)}
+.contact-light .contact-circle:hover{background:var(--navy);color:#f7f8fc}
+.contact-light .contact-email{color:var(--ink);border-top-color:var(--line)}
+.contact-light .contact-email:hover{color:var(--navy)}
+
+/* Floating scroll-to-top: small navy dot with a scroll-progress ring. */
+.scroll-top{position:fixed;right:24px;bottom:24px;z-index:30;display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:var(--navy);color:#f7f8fc;box-shadow:0 0 0 1px #b7c9ef55,0 6px 18px #24376133;opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity .3s,transform .3s,visibility .3s,background .2s}
+.scroll-top.is-visible{opacity:1;visibility:visible;transform:none}
+.scroll-top:hover{background:#314c7a;transform:translateY(-2px)}
+.scroll-top>svg:first-child{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.scroll-top-progress{fill:none;stroke:#b7c9ef;stroke-width:2;stroke-linecap:round;transition:stroke-dashoffset .15s linear}
+.scroll-top:hover>svg+svg{animation:scroll-top-launch .5s cubic-bezier(.5,0,.3,1)}
+@keyframes scroll-top-launch{45%{transform:translateY(-140%);opacity:0}46%{transform:translateY(140%);opacity:0}to{transform:none;opacity:1}}
+.scroll-top:focus-visible{outline:2px solid #4a5f99;outline-offset:3px}
+
+@media(max-width:900px){
+ .site-footer-main{flex-direction:column;align-items:flex-start;gap:28px}
+ .site-footer-links a:last-child{margin-left:0}
+}
+@media(max-width:600px){
+ .site-footer-main{padding-block:44px 34px}
+ .site-footer-brand{align-items:flex-start;gap:18px}
+ .site-footer-brand .brand-monogram{width:52px;height:52px;font-size:31px}
+ .site-footer-brand p{font-size:24px}
+ .site-footer-brand em{display:block}
+ .site-footer-links{gap:14px 24px}
+ .scroll-top{right:16px;bottom:16px;width:40px;height:40px}
+}

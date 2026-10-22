@@ -1,0 +1,50 @@
+/* 404 page: fits one screen. Message and buttons, plus the offline runner game. */
+body:has(.lost-page) .site-footer,body:has(.lost-page) .scroll-top{display:none}
+/* The page fills whatever height is left under the header. */
+body:has(.lost-page){display:flex;flex-direction:column;min-height:100svh}
+.lost-page{flex:1;display:flex;align-items:center;padding-block:24px;overflow:hidden;background-image:radial-gradient(#24376114 .65px,transparent .65px);background-size:12px 12px}
+.lost-inner{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:56px;align-items:center}
+.lost-code{margin:0 0 4px;font-size:clamp(80px,9vw,128px);font-weight:500;line-height:.9;letter-spacing:-.06em;color:var(--navy)}
+.lost-page h1{font-size:clamp(30px,3.4vw,46px);font-weight:400;line-height:1.1;letter-spacing:-1.4px;margin:16px 0 12px}
+.lost-page h1 em{font-style:normal;color:var(--navy)}
+.lost-lede{max-width:42ch;margin:0;font-size:15px;line-height:1.7;color:#5f6a80}
+
+.lost-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.lost-actions .primary-button,.lost-actions .outline-button{margin:0;gap:10px;padding:14px 20px;font-size:13px}
+.lost-actions .outline-button{background:#fff}
+
+.lost-game{width:100%;border:1px solid var(--line);border-radius:16px 4px 16px 4px;background:var(--paper);box-shadow:0 18px 44px #2437611a;overflow:hidden}
+.lost-game-bar{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--line);background:#edf0f7;font-size:12px;color:var(--muted)}
+.lost-dots{display:inline-flex;gap:6px}
+.lost-dots i{width:9px;height:9px;border-radius:50%;background:#c9d1e3}
+.lost-dots i:first-child{background:var(--navy)}
+.dino-canvas{display:block;width:100%;height:min(260px,34svh);cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.dino-canvas:focus-visible{outline:2px solid #4a5f99;outline-offset:-4px}
+.lost-keys{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 20px;padding:11px 14px 12px;border-top:1px dashed var(--line);font-size:12px;color:var(--muted)}
+.lost-keys kbd{display:inline-block;min-width:22px;padding:1px 6px;margin-inline:2px;border:1px solid #c9d1e3;border-bottom-width:2px;border-radius:4px;background:#fff;font:inherit;font-size:11px;color:var(--ink)}
+.lost-tap{display:none}
+
+@media(hover:none) and (pointer:coarse){
+ .lost-keys>span:not(.lost-tap){display:none}
+ .lost-tap{display:inline}
+}
+@media(max-width:900px){
+ .lost-page{padding-block:18px}
+ .lost-inner{grid-template-columns:1fr;gap:22px;text-align:center}
+ .lost-message{display:flex;flex-direction:column;align-items:center}
+ .lost-eyebrow{justify-content:center}
+ .lost-code{font-size:72px}
+ .lost-page h1{font-size:28px;letter-spacing:-.8px;margin:12px 0 8px}
+ .lost-lede{font-size:14px;line-height:1.6}
+ .lost-actions{justify-content:center;flex-wrap:nowrap;margin-top:18px}
+ .lost-actions .primary-button,.lost-actions .outline-button{padding:12px 14px;font-size:12px;gap:8px}
+ .lost-actions .outline-button svg:last-child{display:none}
+ .dino-canvas{height:min(200px,26svh)}
+}
+@media(max-width:900px) and (max-height:720px){
+ .lost-page{padding-block:12px}
+ .lost-inner{gap:16px}
+ .lost-code{font-size:58px}
+ .lost-page h1{font-size:25px;margin:8px 0 6px}
+ .lost-actions{margin-top:14px}
+}

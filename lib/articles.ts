@@ -1,8 +1,8 @@
 import publishedArticles from './published-articles.json';
 import type { OnlineArticle } from './content';
-export type Category = 'Politics' | 'Lifestyle' | 'Entertainment' | 'Personal notes' | 'Technology' | 'Design';
+export type Category = 'Politics' | 'Lifestyle' | 'Entertainment' | 'Personal notes';
 export type Article = { slug: string; title: string; excerpt: string; category: Category; image: string; imageAlt?: string; date: string; readTime: string; body: string; sample?: boolean; status?: 'draft' | 'published' };
-export const categories: Category[] = ['Technology', 'Design', 'Politics', 'Lifestyle', 'Entertainment', 'Personal notes'];
+export const categories: Category[] = ['Politics', 'Lifestyle', 'Entertainment', 'Personal notes'];
 export const articles = publishedArticles as OnlineArticle[];
 export const storageKey = 'tushar-writing-room-v1';
 export function getLocalArticles(): Article[] {

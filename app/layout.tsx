@@ -4,6 +4,7 @@ import './creative.css';
 import './typography.css';
 import './header.css';
 import './article-extras.css';
+import './footer.css';
 import { Header, Footer } from '@/components/chrome';
 import localFont from 'next/font/local';
 import { siteUrl, assetPath } from '@/lib/site';

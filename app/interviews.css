@@ -1,0 +1,39 @@
+/* Home page "On the record" interviews section. */
+.interviews-section{position:relative;padding-block:84px 88px;background:#1d2d50;color:#eff3fc;overflow:hidden}
+.interviews-section:before{content:'“';position:absolute;right:4%;top:-40px;font-family:Georgia,serif;font-size:300px;line-height:1;color:#ffffff0d;pointer-events:none}
+.interviews-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:48px;margin-bottom:44px}
+.interviews-heading h2{font-size:clamp(34px,4vw,54px);font-weight:400;line-height:1.08;letter-spacing:-1.8px;margin:20px 0 0}
+.interviews-heading h2 em{color:#b7c9ef}
+.interviews-intro{display:flex;align-items:center;gap:30px;max-width:470px}
+.interviews-intro p{margin:0;font-size:15px;line-height:1.75;color:#c5cee0}
+.interviews-count{display:flex;align-items:center;gap:10px;padding-left:28px;border-left:1px solid #ffffff29;flex-shrink:0}
+.interviews-count strong{font-size:46px;font-weight:400;letter-spacing:-2px;line-height:1;color:#fff}
+.interviews-count span{font-size:10px;letter-spacing:1.6px;font-weight:600;text-transform:uppercase;line-height:1.5;color:#9aa6c4}
+
+/* Equal frames; each screenshot is letterboxed on a call-style dark background so nothing is cropped. */
+.interviews-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+.interview-card{display:flex;flex-direction:column}
+.interview-frame{position:relative;padding:8px;border-radius:16px 4px 16px 4px;background:#ffffff0f;border:1px solid #ffffff24;box-shadow:0 18px 40px #0a12262e;transition:transform .35s,box-shadow .35s}
+.interview-frame img{aspect-ratio:16/10;object-fit:contain;background:#0f1424;border-radius:10px 2px 10px 2px}
+.interview-card:hover .interview-frame{transform:translateY(-4px) rotate(-.4deg);box-shadow:0 24px 50px #0a122647;border-color:#b7c9ef66}
+.interview-live{position:absolute;left:20px;top:20px;display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;background:#f7f8fcf0;color:var(--navy);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase}
+.interview-live:before{content:'';width:6px;height:6px;border-radius:50%;background:#e0564f;box-shadow:0 0 0 3px #e0564f2e}
+.interview-body{padding:24px 6px 0}
+.interview-number{font-size:10px;letter-spacing:1.8px;font-weight:600;color:#9aa6c4}
+.interview-body h3{font-size:clamp(26px,2.4vw,34px);font-weight:400;letter-spacing:-1px;margin:10px 0 8px;color:#eff3fc}
+.interview-body p{margin:0;font-size:14px;line-height:1.7;color:#c5cee0}
+
+@media(max-width:1024px){
+ .interviews-heading{flex-direction:column;align-items:flex-start;gap:24px}
+}
+@media(max-width:760px){
+ .interviews-section{padding-block:56px 60px}
+ .interviews-grid{grid-template-columns:1fr;gap:40px}
+ .interviews-intro{flex-direction:column;align-items:flex-start;gap:20px}
+ .interviews-count{padding-left:0;border-left:0}
+ .interviews-heading h2{letter-spacing:-1.1px}
+ .interview-live{left:16px;top:16px}
+}
+
+/* Home journal sits on the soft tint so it separates from the hero above. */
+main>.journal-section:not(.journal-full){background:#edf0f7;border-top:1px solid var(--line)}

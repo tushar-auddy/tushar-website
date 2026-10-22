@@ -1,4 +1,4 @@
-import { categories, type Article } from './articles';
+import { articles, categories, type Article } from './articles';
 import { contentProject } from './content-project';
 
 export type TextBlock = { _key: string; _type: string; style?: string; listItem?: string; children?: { _key: string; text: string; marks?: string[] }[]; markDefs?: { _key: string; _type: string; href?: string }[] };
@@ -17,7 +17,10 @@ export async function fetchPublishedArticles(signal?: AbortSignal): Promise<Onli
   const data = await response.json();
   return (data.result || []).map((doc: ArticleExtras & {title: string; slug: string; excerpt?: string; category: Article['category']; publishedAt?: string; body?: TextBlock[]; image?: string; imageAlt?: string; seo?: ArticleSeo}) => {
     const body = (doc.body || []).map(block => (block.children || []).map(child => child.text).join('')).join('\n\n');
-    return { title: doc.title, slug: doc.slug, excerpt: doc.excerpt || '', category: categories.includes(doc.category) ? doc.category : 'Personal notes', date: doc.publishedAt || new Date().toISOString(), image: doc.image || '/images/writing.jpg', imageAlt: doc.imageAlt, body, portableBody: doc.body, online: true, seo: doc.seo, faq: doc.faq, keywords: doc.keywords, schema: doc.schema, modifiedAt: doc.modifiedAt, readTime: `${Math.max(1, Math.ceil(body.split(/\s+/).length / 200))} min read`, status: 'published' };
+    // Articles bundled with the site keep their local cover photo, even if the CMS has a different one.
+    const local = articles.find(article => article.slug === doc.slug);
+    const cover = local ? { image: local.image, imageAlt: local.imageAlt, seo: doc.seo && { ...doc.seo, image: undefined } } : { image: doc.image || '/images/writing.jpg', imageAlt: doc.imageAlt, seo: doc.seo };
+    return { title: doc.title, slug: doc.slug, excerpt: doc.excerpt || '', category: categories.includes(doc.category) ? doc.category : 'Personal notes', date: doc.publishedAt || new Date().toISOString(), ...cover, body, portableBody: doc.body, online: true, faq: doc.faq, keywords: doc.keywords, schema: doc.schema, modifiedAt: doc.modifiedAt, readTime: `${Math.max(1, Math.ceil(body.split(/\s+/).length / 200))} min read`, status: 'published' };
   });
 }
 
