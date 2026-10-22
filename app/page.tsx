@@ -10,10 +10,11 @@ export default function Home() {
 
 function TopicIndex() {
  const topics = [
-  {number:"01",category:"Politics",title:"The bigger picture.",description:"Beyond the noise. Into the nuance."},
-  {number:"02",category:"Lifestyle",title:"Life, in the details.",description:"Ordinary days. Extraordinary little things."},
+  {number:"01",category:"Technology",title:"What changes next.",description:"Platforms, products, and the people using them."},
+  {number:"02",category:"Design",title:"Form meets meaning.",description:"Typography, narratives, and thoughtful experiences."},
   {number:"03",category:"Entertainment",title:"Culture worth a closer look.",description:"From the big screen to imaginary worlds."},
   {number:"04",category:"Personal notes",title:"A thought, or two.",description:"The observations between the headlines."},
  ];
  return <section className="curiosity-section"><div className="container"><div className="curiosity-heading"><div><div className="eyebrow light"><span/> FOUR WAYS OF LOOKING AT THE WORLD</div><h2>Follow your <span>curiosity.</span></h2></div><p>No single beat tells the whole story.<br/>Here are a few places to start.</p></div><div className="topic-index">{topics.map(topic=><Link href={`/journal/?category=${encodeURIComponent(topic.category)}`} key={topic.number} className="topic-link"><div className="topic-top"><span>{topic.number} / {topic.category}</span><ArrowUpRight size={22}/></div><h3>{topic.title}</h3><p>{topic.description}</p><span className="topic-watermark" aria-hidden="true">{topic.number}</span></Link>)}</div></div></section>;
 }
+

@@ -13,7 +13,7 @@ export function ArticleSeo({ article }: { article: OnlineArticle }) {
   const description = article.seo?.description?.trim() || article.excerpt;
   const image = new URL(assetPath(article.seo?.image || article.image), window.location.origin).href;
   const canonical = new URL(window.location.pathname, window.location.origin);
-  canonical.searchParams.set('story', article.slug);
+  if (window.location.pathname.replace(/\/$/,'').endsWith('/read')) canonical.searchParams.set('story', article.slug);
   if (article.seo?.canonicalUrl && /^https?:\/\//i.test(article.seo.canonicalUrl)) canonical.href = article.seo.canonicalUrl;
   const socialTitle = article.seo?.socialTitle?.trim() || title;
   const socialDescription = article.seo?.socialDescription?.trim() || description;
@@ -44,12 +44,14 @@ export function ArticleSeo({ article }: { article: OnlineArticle }) {
   if (!link) { link = document.createElement('link'); link.rel = 'canonical'; document.head.appendChild(link); }
   link.href = canonical.href;
   const targetLink = link;
-  const schema = document.createElement('script');
+  const existingSchema = document.querySelector<HTMLScriptElement>('#article-structured-data');
+  const previousSchema = existingSchema?.textContent;
+  const schema = existingSchema || document.createElement('script');
   schema.type = 'application/ld+json';
   schema.textContent = JSON.stringify(articleSchema(article, canonical.href, image)).replace(/</g, '\\u003c');
   document.head.appendChild(schema);
   return () => {
-   schema.remove();
+   if (existingSchema) schema.textContent = previousSchema || ''; else schema.remove();
    document.title = originalTitle;
    restore.forEach(fn => fn());
    if (!existingLink) targetLink.remove(); else if (previousHref != null) targetLink.setAttribute('href', previousHref); else targetLink.removeAttribute('href');
@@ -57,3 +59,4 @@ export function ArticleSeo({ article }: { article: OnlineArticle }) {
  }, [article]);
  return null;
 }
+
