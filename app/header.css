@@ -1,0 +1,17 @@
+/* Original header layout, with the interactive personal mark retained. */
+.header-brand{display:flex;align-items:center;gap:13px;flex-shrink:0}
+.brand-monogram{position:relative;display:flex;align-items:center;justify-content:center;background:var(--navy);color:#f7f8fc;height:44px;width:44px;border-radius:11px 2px 11px 2px;font-size:27px;font-weight:500;letter-spacing:-2.5px;line-height:1;padding:0 3px 3px 0;transition:transform .25s,background .25s}
+.brand-monogram>span:first-child{color:#b7c9ef}
+.monogram-corner{position:absolute;right:-4px;top:-4px;background:#aebfe2;height:8px;width:8px;transform:rotate(12deg);border:2px solid var(--paper)}
+.header-brand:hover .brand-monogram{transform:rotate(-5deg);background:#314c7a}
+@media(max-width:800px){.restored-header .header-brand{gap:10px}.restored-header .brand-monogram{width:38px;height:38px;font-size:25px}.restored-header .wordmark{font-size:25px}}
+@media(max-width:760px){
+ .restored-header .menu-toggle{display:inline-flex;border-radius:4px}
+ .restored-header .navigation{display:none;position:absolute;top:82px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:var(--paper);border-bottom:1px solid var(--line);padding:16px 24px 24px;box-shadow:0 10px 20px #24376110;z-index:20}
+ .restored-header .navigation.open{display:flex}
+ .restored-header .navigation>a{font-size:14px;padding:14px 0}
+ .restored-header .navigation>a.active:after{left:auto;right:5px;bottom:20px}
+ .restored-header .navigation .nav-contact{justify-content:space-between;margin-top:8px;padding:13px}
+}
+@media(max-width:600px){.restored-header .brand-monogram{width:37px;height:37px;font-size:24px}.restored-header .wordmark{font-size:25px}.restored-header .navigation{top:76px}}
+@media(max-width:359px){.restored-header .wordmark{font-size:22px}.restored-header .header-brand{gap:9px}.restored-header .brand-monogram{width:34px;height:34px;font-size:23px}}
