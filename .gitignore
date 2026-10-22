@@ -6,3 +6,5 @@ out/
 *.tar.gz
 .openai-local/
 .openai/deploy/
+sanity/dist/
+sanity/.sanity/
