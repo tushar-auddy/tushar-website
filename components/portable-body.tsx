@@ -25,7 +25,7 @@ export function PortableBody({ blocks }: { blocks: TextBlock[] }) {
    rendered.push(type === 'number' ? <ol key={block._key}>{items}</ol> : <ul key={block._key}>{items}</ul>);
   } else {
    const content = inline(block);
-   rendered.push(block.style === 'h2' ? <h2 key={block._key}>{content}</h2> : block.style === 'h3' ? <h3 key={block._key}>{content}</h3> : block.style === 'blockquote' ? <blockquote key={block._key}>{content}</blockquote> : <p key={block._key}>{content}</p>);
+   rendered.push(block.style === 'h2' ? <h2 id={`section-${block._key}`} key={block._key}>{content}</h2> : block.style === 'h3' ? <h3 id={`section-${block._key}`} key={block._key}>{content}</h3> : block.style === 'blockquote' ? <blockquote key={block._key}>{content}</blockquote> : <p key={block._key}>{content}</p>);
   }
  }
  return <div className="reading-body">{rendered}</div>;

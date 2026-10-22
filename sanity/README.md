@@ -23,4 +23,10 @@ Published articles appear when readers open or refresh the journal. Their share 
 
 Each article includes **SEO & sharing** fields for an optional meta title, meta description, and sharing image. Blank fields fall back to the article title, introduction, and cover. The reader applies these after loading the online article. Crawlers that do not execute JavaScript may still see the generic page metadata; reliable crawler previews require server rendering or rebuilding static article pages after publishing.
 
+The editor has separate **Article**, **FAQ**, **Keywords**, **Schema**, and **SEO & sharing** tabs. Add optional FAQ questions and answers manually. The focus keyword is an editorial aid; related keywords become topic chips and help rank related articles. The Schema tab selects BlogPosting, NewsArticle, or Article, optionally includes visible FAQs, and accepts validated additional JSON-LD without script tags. Author and article details populate the standard schema automatically.
+
+The reader builds a table of contents from Heading/Subheading blocks, with links to each heading. Related articles are selected automatically from published posts by shared category and keywords, then date; the current article and duplicates are excluded. An online article with no other published posts has no related-articles section. SEO supports separate social text, a canonical URL override, and a noindex request. These browser-applied settings retain the static-hosting crawler limitations described above.
+
+Run `node tests/article-extras.cjs` from the repository root to check heading anchors, related matching and schema generation without creating public content.
+
 The existing `/studio/` route is a legacy browser-only scratchpad. It does not publish online.
