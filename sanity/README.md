@@ -21,4 +21,6 @@ Open the website’s **Writing room**, then **Open the editor**. Create an Artic
 
 Published articles appear when readers open or refresh the journal. Their share links use `/read/?story=your-story-link`, which works with static GitHub Pages hosting. New articles do not receive server-rendered social metadata until static generation is extended.
 
+Each article includes **SEO & sharing** fields for an optional meta title, meta description, and sharing image. Blank fields fall back to the article title, introduction, and cover. The reader applies these after loading the online article. Crawlers that do not execute JavaScript may still see the generic page metadata; reliable crawler previews require server rendering or rebuilding static article pages after publishing.
+
 The existing `/studio/` route is a legacy browser-only scratchpad. It does not publish online.
