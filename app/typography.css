@@ -1,0 +1,200 @@
+/* Outfit remains the primary face. Body copy, labels, and headlines each have a readable scale. */
+body{font-size:16px;font-weight:400;line-height:1.6;font-optical-sizing:auto}
+p{text-wrap:pretty}
+h1,h2,h3{text-wrap:balance}
+h2{line-height:1.2}
+.eyebrow{font-size:11px;line-height:1.5;letter-spacing:1.5px}
+.wordmark{line-height:1.2}
+.navigation{font-size:14px;font-weight:450}
+.navigation .nav-contact{font-size:14px}
+.primary-button,.outline-button,.text-link{font-size:14px;font-weight:500;line-height:1.4}
+.primary-button,.outline-button{padding:15px 21px}
+.edition-line{font-size:10px;line-height:1.6;letter-spacing:1.2px}
+.hero-intro{font-size:21px;line-height:1.65;letter-spacing:-.25px}
+.hero-description{font-size:16px;line-height:1.8;max-width:45ch;color:#54617a}
+.hero-actions .text-link{font-size:14px}
+.hero-footnote{font-size:12px;line-height:1.6;gap:9px}
+.photo-caption>span:first-child{font-size:9px;letter-spacing:1.4px;line-height:1.5}
+.photo-caption>span:last-child{font-size:26px;line-height:1.2}
+.portrait-note>span{font-size:8px;letter-spacing:1.2px}
+.portrait-note p{font-size:10px;line-height:1.5}
+.image-label span{font-size:8px;letter-spacing:.8px}
+.stat p{font-size:13px;line-height:1.6;color:#626f87}
+.strip-note p{font-size:14px;line-height:1.7}
+.section-heading>p{font-size:15px;line-height:1.8;color:#586780;max-width:36ch}
+.section-heading .journal-title{line-height:1.15;letter-spacing:-1.5px}
+.filter-bar{padding-bottom:19px;margin-bottom:33px}
+.filters{gap:7px}
+.filters button{font-size:13px;font-weight:450;padding:10px 16px;line-height:1.4;color:#52617c}
+.filters button>span{font-size:11px}
+.search-box input{font-size:15px}
+.search-box>span{font-size:12px}
+.card-meta{margin:21px 0 13px;gap:12px;line-height:1.5}
+.category{font-size:11px;font-weight:600;letter-spacing:1.2px}
+.card-meta>span:last-child{font-size:12px;color:#65728a;white-space:nowrap}
+.card-title h3{font-size:27px;font-weight:500;line-height:1.25;letter-spacing:-.5px;margin-bottom:14px}
+.card-excerpt{font-size:15px;line-height:1.75;color:#58657d;margin-bottom:22px;min-height:0;max-width:52ch}
+.card-bottom{font-size:12px;line-height:1.5;color:#65728a;padding-top:15px;gap:12px}
+.story-number{font-size:9px;letter-spacing:.8px}
+.sample-chip{font-size:8px;letter-spacing:1px;padding:6px 8px}
+.journal-bottom>p{font-size:15px;line-height:1.7;color:#60708c}
+.journal-bottom .outline-button{font-size:13px}
+.journal-bottom p.sample-disclosure{font-size:12px;line-height:1.7;max-width:40ch;text-align:right}
+.featured-layout{gap:30px 38px}
+.featured-layout .article-card:first-child .card-image-link{height:325px}
+.featured-layout .article-card:first-child .card-title h3{font-size:34px;line-height:1.2;letter-spacing:-.8px;max-width:25ch}
+.featured-layout .article-card:first-child .card-excerpt{font-size:16px;line-height:1.75;max-width:46ch}
+.featured-layout .article-card:not(:first-child){grid-template-columns:140px minmax(0,1fr);gap:0 23px;padding-bottom:25px}
+.featured-layout .article-card:not(:first-child) .card-image-link{height:100%;min-height:255px}
+.featured-layout .article-card:not(:first-child) .card-meta{margin:0 0 12px;flex-wrap:wrap;gap:4px 14px}
+.featured-layout .article-card:not(:first-child) .card-title h3{font-size:25px;line-height:1.25;letter-spacing:-.5px;margin-bottom:13px}
+.featured-layout .article-card:not(:first-child) .card-excerpt{font-size:14px;line-height:1.75;margin-bottom:18px}
+.featured-layout .article-card:not(:first-child) .card-bottom{font-size:11px;line-height:1.5}
+.featured-layout .article-card:not(:first-child) .sample-chip{font-size:7px}
+.curiosity-heading .eyebrow.light{font-size:10px;letter-spacing:1.5px;line-height:1.5}
+.curiosity-heading>p{font-size:15px;line-height:1.8;color:#c0cce3}
+.topic-link{min-height:245px;padding-top:27px;padding-bottom:28px}
+.topic-top>span{font-size:10px;letter-spacing:1px;line-height:1.6;color:#c2cfea}
+.topic-link h3{font-size:27px;line-height:1.25;letter-spacing:-.5px;max-width:15ch;margin-top:27px}
+.topic-link p{font-size:14px;line-height:1.75;color:#bac8e2;max-width:25ch}
+.about-copy .eyebrow{font-size:11px}
+.about-copy h2{font-size:39px;line-height:1.2;letter-spacing:-1.1px}
+.about-copy>p{font-size:16px;line-height:1.85;color:#52607a;margin-bottom:21px}
+.about-tags{gap:8px;margin-block:26px}
+.about-tags span{font-size:11px;line-height:1.5;padding:7px 10px;color:#536482}
+.about-copy .text-link{font-size:14px}
+.paper-number{font-size:9px;letter-spacing:1.3px}
+.paper-signature{font-size:32px}
+.field-note .eyebrow{font-size:10px;letter-spacing:1.4px}
+.field-note p{font-size:15px;line-height:1.85;color:#586782;margin-bottom:19px}
+.field-note .text-link{font-size:14px}
+.contact-inner .eyebrow.light{font-size:10px;letter-spacing:1.3px;line-height:1.6}
+.contact-inner p{font-size:15px;line-height:1.8;color:#c5cee0;max-width:55ch}
+.contact-email{font-size:16px;line-height:1.6;padding-top:22px}
+.footer-top p{font-size:13px;line-height:1.7;color:#65728a;margin-top:12px}
+.footer-links{font-size:13px;line-height:1.6}
+.footer-bottom{font-size:11px;line-height:1.7}
+.reading-deck{font-size:19px;line-height:1.75;color:#56657d}
+.reading-header h1{line-height:1.12;letter-spacing:-1.6px}
+.reading-byline{font-size:12px;line-height:1.6}
+.reading-byline strong{font-size:14px;font-weight:500}
+.reading-byline button{font-size:13px}
+.reading-body{max-width:730px}
+.reading-body>p{font-size:19px;line-height:1.85;color:#414e65;letter-spacing:.02px;margin-bottom:27px}
+.reading-body>h2{font-size:32px;line-height:1.25;letter-spacing:-.6px;margin-top:43px;margin-bottom:20px}
+.back-link{font-size:13px;line-height:1.5}
+.sample-notice{font-size:12px;line-height:1.8;padding:16px 20px}
+.studio-info{font-size:14px;line-height:1.85}
+.studio-form label{font-size:12px;line-height:1.5;letter-spacing:.4px}
+.studio-form input,.studio-form select,.studio-form textarea{font-size:16px;letter-spacing:normal}
+.studio-form textarea.body-input{font-size:18px;line-height:1.85}
+.editor-help{font-size:12px;line-height:1.6;letter-spacing:normal}
+.draft-button strong{font-size:14px;line-height:1.5}
+.draft-button span{font-size:11px;line-height:1.5}
+.studio-tabs button,.editor-toolbar button{font-size:13px}
+.editor-status{font-size:14px;line-height:1.7}
+.studio-preview .reading-body p{font-size:18px}
+@media(max-width:1100px){
+ .hero-footnote{font-size:11px;flex-wrap:wrap}
+ .hero-intro{font-size:19px}.hero-description{font-size:15px}
+ .hero-actions{gap:20px}.hero-actions .text-link{font-size:13px}
+ .featured-layout{grid-template-columns:repeat(2,minmax(0,1fr));gap:34px}
+ .featured-layout .article-card:first-child{grid-column:1/-1;grid-row:auto;display:grid;grid-template-columns:1.05fr 1fr;column-gap:30px;align-content:center}
+ .featured-layout .article-card:first-child .card-image-link{grid-row:span 5;height:100%;min-height:310px}
+ .featured-layout .article-card:first-child .card-meta{margin-top:0}
+ .featured-layout .article-card:first-child .card-title h3{font-size:31px}
+ .featured-layout .article-card:not(:first-child){display:block;border-bottom:0;padding-bottom:0}
+ .featured-layout .article-card:not(:first-child) .card-image-link{height:235px;min-height:0}
+ .featured-layout .article-card:not(:first-child) .card-meta{margin:19px 0 12px;justify-content:space-between}
+ .featured-layout .article-card:not(:first-child) .card-excerpt{font-size:15px}
+ .featured-layout .article-card:not(:first-child) .card-bottom{border-top:1px solid var(--line);padding-top:14px;font-size:12px}
+ .journal-full .article-grid,.related-stories .article-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .topic-link p{font-size:13px}.topic-link h3{font-size:25px}
+ .about-grid{gap:50px}.about-copy h2{font-size:35px}
+ .field-note-inner{grid-template-columns:50px 1.2fr 1fr;gap:23px}
+ .field-note h2{font-size:30px}.field-note p{font-size:14px}
+}
+@media(max-width:800px){
+ .edition-line{font-size:8px}.navigation{font-size:13px;gap:20px}
+ .navigation .nav-contact{font-size:13px}
+ .hero-intro{font-size:18px}.hero-description{font-size:15px;line-height:1.8}
+ .hero-actions .primary-button{font-size:13px}.hero-actions .text-link{font-size:13px}
+ .hero-art{height:430px}.portrait-note p{font-size:9px}
+ .section-heading>p{font-size:14px}.filters button{font-size:12px;padding:10px 12px}
+ .category{font-size:10px;letter-spacing:1px}.card-meta>span:last-child{font-size:11px}
+ .featured-layout .article-card:first-child .card-title h3{font-size:28px}
+ .featured-layout .article-card:first-child .card-excerpt{font-size:15px}
+ .curiosity-heading>p{font-size:14px}.topic-link p{font-size:14px}.topic-top>span{font-size:11px}
+ .about-copy>p{font-size:15px;line-height:1.85}.about-copy .eyebrow{font-size:10px}
+ .about-tags span{font-size:10px}.field-note-inner{grid-template-columns:40px 1fr;gap:18px 23px}
+ .field-note-inner>div:last-child{grid-column:2}.field-note p{font-size:15px}
+ .contact-inner h2{font-size:38px}.contact-inner p{font-size:14px}
+ .contact-inner .eyebrow.light{font-size:9px}.footer-links{gap:20px}
+}
+@media(max-width:600px){
+ .hero .eyebrow{font-size:10px;line-height:1.6;letter-spacing:1.2px}
+ .edition-line{font-size:7px;letter-spacing:.9px}.edition-line span:last-child{font-size:6px}
+ .hero-intro{font-size:19px;line-height:1.65;max-width:32ch}
+ .hero-description{font-size:16px;line-height:1.8;max-width:37ch;margin-bottom:27px}
+ .hero-actions{gap:20px;flex-wrap:wrap;row-gap:16px}
+ .hero-actions .primary-button{font-size:14px;padding:15px 18px}
+ .hero-actions .text-link{font-size:13px}.hero-footnote{font-size:11px;gap:7px;line-height:1.7}
+ .hero-art{height:396px}.portrait-note>span{font-size:7px}.portrait-note p{font-size:9px}
+ .photo-caption>span:first-child{font-size:7px}.photo-caption>span:last-child{font-size:22px}
+ .image-label span{font-size:6px;letter-spacing:.6px}
+ .stat p{font-size:11px;line-height:1.6}.strip-grid{gap:20px;min-height:118px}
+ .section-heading .eyebrow{font-size:10px;letter-spacing:1.3px}
+ .section-heading>p{font-size:15px;line-height:1.75;margin-top:17px}
+ .filter-bar{gap:10px;padding-bottom:16px;margin-bottom:28px}
+ .filters{gap:5px}.filters button{font-size:12px;padding:10px 13px;line-height:1.5}
+ .search-box input{font-size:14px}.search-box>span{font-size:11px}
+ .article-grid,.featured-layout,.journal-full .article-grid,.related-stories .article-grid{grid-template-columns:minmax(0,1fr);gap:37px}
+ .featured-layout .article-card:first-child{display:block;grid-column:auto}
+ .featured-layout .article-card:first-child .card-image-link,.featured-layout .article-card:not(:first-child) .card-image-link{height:235px;min-height:0}
+ .card-title h3,.featured-layout .article-card:first-child .card-title h3,.featured-layout .article-card:not(:first-child) .card-title h3{font-size:28px;line-height:1.25;letter-spacing:-.55px;margin-bottom:14px}
+ .card-excerpt,.featured-layout .article-card:first-child .card-excerpt,.featured-layout .article-card:not(:first-child) .card-excerpt{font-size:16px;line-height:1.8;color:#52617a;margin-bottom:21px;max-width:42ch}
+ .card-meta,.featured-layout .article-card:first-child .card-meta,.featured-layout .article-card:not(:first-child) .card-meta{margin:19px 0 13px;gap:12px;flex-wrap:wrap}
+ .category{font-size:11px;letter-spacing:1px}.card-meta>span:last-child{font-size:12px}
+ .card-bottom,.featured-layout .article-card:not(:first-child) .card-bottom{font-size:12px;line-height:1.6;padding-top:14px}
+ .sample-chip,.featured-layout .article-card:not(:first-child) .sample-chip{font-size:8px}
+ .story-number{font-size:9px;margin-right:7px}
+ .journal-bottom{gap:16px}.journal-bottom>p{font-size:14px}
+ .journal-bottom .outline-button{font-size:13px;padding:14px 18px}
+ .journal-bottom p.sample-disclosure{font-size:12px;text-align:left}
+ .curiosity-heading .eyebrow.light{font-size:9px;letter-spacing:1px;max-width:34ch}
+ .curiosity-heading>p{font-size:15px;line-height:1.8;margin-top:17px}
+ .topic-link{min-height:250px;padding-top:24px!important;padding-bottom:24px!important}
+ .topic-top>span{font-size:9px;letter-spacing:.5px}.topic-top{gap:8px;align-items:flex-start}
+ .topic-top svg{flex-shrink:0}.topic-link h3{font-size:25px;line-height:1.25;letter-spacing:-.5px}
+ .topic-link p{font-size:14px;line-height:1.75;max-width:20ch}
+ .about-copy .eyebrow{font-size:10px}.about-copy h2{font-size:34px;line-height:1.22;letter-spacing:-1px}
+ .about-copy>p{font-size:16px;line-height:1.85;margin-bottom:21px}
+ .about-tags span{font-size:11px;padding:7px 9px}.about-copy .text-link{font-size:14px}
+ .paper-number{font-size:8px}.about-paper blockquote{font-size:28px;line-height:1.4}
+ .field-note .eyebrow{font-size:9px;line-height:1.6;letter-spacing:1px}
+ .field-note h2{font-size:29px;line-height:1.25}
+ .field-note p{font-size:15px;line-height:1.85}.field-note .text-link{font-size:14px;line-height:1.6}
+ .contact-inner{grid-template-columns:minmax(0,1fr) 49px;gap:22px 12px}
+ .contact-inner .eyebrow.light{font-size:9px;line-height:1.7;letter-spacing:1px;max-width:29ch}
+ .contact-inner h2{font-size:31px;line-height:1.2;letter-spacing:-.9px}
+ .contact-inner p{font-size:15px;line-height:1.8;max-width:29ch}
+ .contact-email{font-size:15px;padding-top:18px;gap:10px;max-width:100%}
+ .footer-top p{font-size:13px}.footer-links{font-size:13px;gap:17px;flex-wrap:wrap}
+ .footer-bottom{font-size:11px;gap:15px;align-items:flex-start}
+ .footer-bottom p{max-width:28ch}.footer-bottom a{white-space:nowrap}
+ .reading-header h1{font-size:38px;line-height:1.15;letter-spacing:-1.2px}
+ .reading-deck{font-size:18px;line-height:1.75}.reading-byline{font-size:11px;gap:11px}
+ .reading-byline strong{font-size:13px}.reading-byline button{font-size:12px;gap:6px}
+ .reading-body>p{font-size:18px;line-height:1.85;margin-bottom:26px}
+ .reading-body>h2{font-size:29px;line-height:1.25}.sample-notice{font-size:12px;line-height:1.8}
+ .studio-info{font-size:14px;line-height:1.8}.studio-form label{font-size:12px}
+ .studio-form input,.studio-form select,.studio-form textarea{font-size:16px}
+ .studio-form textarea.body-input{font-size:18px;line-height:1.85}
+ .editor-help{font-size:12px}.editor-toolbar .primary-button,.editor-toolbar .outline-button{font-size:13px}
+ .studio-heading>.outline-button{font-size:11px;line-height:1.4}.studio-preview .reading-body p{font-size:18px}
+}
+@media(max-width:359px){
+ .topic-index{grid-template-columns:1fr}.topic-link{min-height:0;padding:22px 0!important;border-right:0;border-bottom:1px solid #ffffff29}
+ .topic-link h3{max-width:none;margin:17px 0 10px}.topic-link p{max-width:none}.topic-link:last-child{border-bottom:0}
+ .contact-inner{grid-template-columns:1fr}.contact-circle{display:none}.contact-email{font-size:14px}
+}

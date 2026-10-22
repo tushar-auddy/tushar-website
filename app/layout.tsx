@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import './creative.css';
+import './typography.css';
 import { Header, Footer } from '@/components/chrome';
 import localFont from 'next/font/local';
 import { siteUrl, assetPath } from '@/lib/site';
