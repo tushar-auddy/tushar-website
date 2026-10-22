@@ -7,9 +7,21 @@ import { ArrowUpRight, ArrowUp, Menu, X, Linkedin, Feather } from 'lucide-react'
 export function Header() {
   const [open, setOpen] = useState(false);
   const [hash, setHash] = useState('');
+  const [compact, setCompact] = useState(false);
   const path = usePathname();
   const headerRef = useRef<HTMLElement>(null);
   const menuRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const update = () => {
+      const scrollY = window.scrollY;
+      // Separate thresholds prevent the changing header height from making it flicker.
+      setCompact(previous => previous ? scrollY > 24 : scrollY > 96);
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    return () => window.removeEventListener('scroll', update);
+  }, []);
 
   useEffect(() => {
     const update = () => setHash(window.location.hash);
@@ -39,7 +51,7 @@ export function Header() {
   const aboutActive = path === '/' && hash === '#about';
   const journalActive = path.startsWith('/journal') || path.startsWith('/read');
 
-  return <header className="header restored-header" ref={headerRef}>
+  return <header className={`header restored-header${compact ? ' header-compact' : ''}`} ref={headerRef}>
     <div className="container nav-inner">
       <Link href="/" className="header-brand" aria-label="Tushar Auddy — home" onClick={() => close()}>
         <span className="brand-monogram" aria-hidden="true">ta<span>.</span><span className="monogram-corner"/></span>
