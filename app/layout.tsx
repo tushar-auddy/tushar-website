@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: { default: 'Tushar Auddy — Words with perspective.', template: '%s | Tushar Auddy' },
   description: 'The portfolio and personal journal of Tushar Auddy. News writer, linguistics postgraduate, and curious observer of politics, lifestyle, entertainment, and everyday life.',
   metadataBase: new URL(siteUrl),
-  openGraph: { title: 'Tushar Auddy — Words with perspective.', description: 'Stories that inform. Perspectives that stay.', type: 'website', images: [new URL(assetPath('/images/writing.jpg'), new URL(siteUrl).origin).href] },
+  openGraph: { title: 'Tushar Auddy — Words with perspective.', description: 'Stories that inform. Perspectives that stay.', type: 'website', images: [new URL(assetPath('/images/tushar-auddy.webp'), new URL(siteUrl).origin).href] },
   robots: { index: true, follow: true },
 };
 
