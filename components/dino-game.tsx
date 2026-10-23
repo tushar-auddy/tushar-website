@@ -4,26 +4,6 @@ import { assetPath } from '@/lib/site';
 
 // Pixel sprites: '#' is a filled cell. Drawn at CELL logical px per cell.
 const CELL = 2;
-const BIRD_UP = [
-  '      ##        ',
-  '      ###       ',
-  '      ####      ',
-  '  #   #####     ',
-  ' ###  ######    ',
-  '################',
-  '   ##########   ',
-  '      #####     ',
-];
-const BIRD_DOWN = [
-  '  #             ',
-  ' ###            ',
-  '################',
-  '   ##########   ',
-  '      ######    ',
-  '      #####     ',
-  '      ####      ',
-  '      ###       ',
-];
 const CLOUD = [
   '      ######      ',
   '    ##      ##    ',
@@ -31,6 +11,13 @@ const CLOUD = [
   '#                #',
   '##################',
 ];
+
+// Flying samosa: body plus two wing layers on the same 201x160 canvas, so they line up when drawn at one size.
+const SAMOSA_SRC = { body: '/images/samosa-body.png', left: '/images/samosa-wing-left.png', right: '/images/samosa-wing-right.png' };
+const SAMOSA_H = 28;
+const SAMOSA_W = Math.round(SAMOSA_H * 201 / 160);
+// Wing shoulders, as fractions of the sprite.
+const WING_ROOTS = { left: { x: 0.22, y: 0.44 }, right: { x: 0.66, y: 0.44 } };
 
 const HEIGHT = 190;
 const MIN_WIDTH = 470;
@@ -46,16 +33,27 @@ const HIP_X = 0.525;
 // Running cycle: stride, legs passing, mirrored stride, legs passing.
 const LEG_FRAMES = [1, 0.45, -1, -0.45];
 const TEAR = '#6fb6ff';
+// Bamboo obstacle sprite (114x240) and its three stalks, as fractions of the sprite; the leaves don't collide.
+const BAMBOO_SRC = '/images/bamboo.png';
+const BAMBOO_RATIO = 114 / 240;
+const STALKS = [
+  { left: 0.23, right: 0.38, top: 0.34 },
+  { left: 0.42, right: 0.6, top: 0.05 },
+  { left: 0.63, right: 0.78, top: 0.54 },
+];
 const GRAVITY = 2100;
 const JUMP_VELOCITY = -640;
 const START_SPEED = 380;
 const MAX_SPEED = 920;
 const HI_KEY = 'ta-dino-hi';
+const GAME_OVER_SOUND = '/sounds/game-over.wav';
+// jump.wav is already mixed down to 25% volume (iOS ignores the volume property).
+const JUMP_SOUND = '/sounds/jump.wav';
 
 const COLORS = { ink: '#243761', soft: '#9aa6c4', cloud: '#d3dbec', text: '#737c8e' };
 
 type Box = { x: number; y: number; w: number; h: number };
-type Obstacle = { kind: 'cactus' | 'bird'; x: number; y: number; w: number; h: number; parts: { dx: number; w: number; h: number }[] };
+type Obstacle = { kind: 'bamboo' | 'samosa'; x: number; y: number; w: number; h: number; parts: { dx: number; w: number; h: number }[] };
 type State = 'idle' | 'running' | 'over';
 
 function drawSprite(ctx: CanvasRenderingContext2D, map: string[], x: number, y: number, cell = CELL) {
@@ -69,19 +67,6 @@ function drawSprite(ctx: CanvasRenderingContext2D, map: string[], x: number, y: 
       ctx.fillRect(x + start * cell, y + r * cell, (c - start + 1) * cell + 0.3, cell + 0.3);
     }
   }
-}
-
-function drawCactus(ctx: CanvasRenderingContext2D, x: number, w: number, h: number) {
-  const trunk = Math.max(6, Math.round(w * 0.4));
-  const tx = x + (w - trunk) / 2;
-  ctx.fillRect(tx, GROUND - h, trunk, h);
-  const armW = Math.max(3, Math.round(trunk * 0.55));
-  const leftY = GROUND - h * 0.72;
-  const rightY = GROUND - h * 0.82;
-  ctx.fillRect(x, leftY, armW, h * 0.32);
-  ctx.fillRect(x, leftY + h * 0.26, tx - x, armW);
-  ctx.fillRect(x + w - armW, rightY, armW, h * 0.3);
-  ctx.fillRect(tx + trunk, rightY + h * 0.24, x + w - tx - trunk, armW);
 }
 
 function overlaps(a: Box, b: Box) {
@@ -117,7 +102,7 @@ export function DinoGame() {
     let clouds = [{ x: 180, y: 38 }, { x: 430, y: 62 }, { x: 640, y: 30 }];
     let groundOffset = 0;
     let legTimer = 0;
-    let birdTimer = 0;
+    let flyTimer = 0;
     let overAt = 0;
     let tears: { x: number; y: number; vx: number; vy: number }[] = [];
     let tearTimer = 0;
@@ -130,6 +115,42 @@ export function DinoGame() {
     const runner = new Image();
     runner.src = assetPath(RUNNER_SRC);
     runner.onload = () => draw();
+    const gameOverSound = new Audio(assetPath(GAME_OVER_SOUND));
+    gameOverSound.preload = 'auto';
+    const jumpSound = new Audio(assetPath(JUMP_SOUND));
+    jumpSound.preload = 'auto';
+    const jump = () => {
+      vy = JUMP_VELOCITY;
+      jumpSound.currentTime = 0;
+      jumpSound.play().catch(() => {});
+    };
+    const bamboo = new Image();
+    bamboo.src = assetPath(BAMBOO_SRC);
+    const samosa = Object.fromEntries(Object.entries(SAMOSA_SRC).map(([key, src]) => { const img = new Image(); img.src = assetPath(src); return [key, img]; })) as Record<keyof typeof SAMOSA_SRC, HTMLImageElement>;
+    // Gentle bob, offset per samosa so two never move in sync.
+    const flyBob = (o: Obstacle) => Math.sin(flyTimer * 5 + o.x * 0.02) * 1.6;
+
+    const drawSamosa = (o: Obstacle) => {
+      if (!Object.values(samosa).every(img => img.complete && img.naturalWidth)) return;
+      const top = o.y + flyBob(o);
+      // Mostly downward wing beats, about seven a second.
+      const beat = 0.15 + Math.sin(flyTimer * 44) * 0.42;
+      ctx.save();
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ([['left', -beat], ['right', beat]] as const).forEach(([side, angle]) => {
+        const root = WING_ROOTS[side];
+        const rx = o.x + o.w * root.x, ry = top + o.h * root.y;
+        ctx.save();
+        ctx.translate(rx, ry);
+        ctx.rotate(angle);
+        ctx.drawImage(samosa[side], o.x - rx, top - ry, o.w, o.h);
+        ctx.restore();
+      });
+      // Body last, so it hides the wing joints.
+      ctx.drawImage(samosa.body, o.x, top, o.w, o.h);
+      ctx.restore();
+    };
     const touch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 
     const resize = () => {
@@ -150,6 +171,7 @@ export function DinoGame() {
     const onGround = () => y >= GROUND - RUNNER_H - 0.5;
 
     const reset = () => {
+      gameOverSound.pause();
       state = 'running';
       y = GROUND - RUNNER_H;
       vy = 0;
@@ -162,27 +184,28 @@ export function DinoGame() {
     };
 
     const press = () => {
-      if (state === 'idle') { reset(); vy = JUMP_VELOCITY; return; }
+      if (state === 'idle') { reset(); jump(); return; }
       if (state === 'over') { if (performance.now() - overAt > 450) reset(); return; }
-      if (onGround()) vy = JUMP_VELOCITY;
+      if (onGround()) jump();
     };
     // Releasing early cuts the jump short, like the original.
     const release = () => { if (state === 'running' && vy < -320) vy = -320; };
 
     const spawn = () => {
       const s = score();
-      const canBird = s > 250 && Math.random() < 0.28;
-      if (canBird) {
+      const canSamosa = s > 250 && Math.random() < 0.28;
+      if (canSamosa) {
         const high = Math.random() < 0.45;
-        const h = BIRD_UP.length * CELL;
-        obstacles.push({ kind: 'bird', x: width + 10, y: high ? GROUND - RUNNER_H - h - 14 : GROUND - h - 18, w: 16 * CELL, h, parts: [] });
+        const h = SAMOSA_H;
+        obstacles.push({ kind: 'samosa', x: width + 10, y: high ? GROUND - RUNNER_H - h - 14 : GROUND - h - 18, w: SAMOSA_W, h, parts: [] });
       } else {
-        const count = Math.random() < 0.65 ? 1 : Math.random() < 0.7 ? 2 : 3;
-        const large = Math.random() < 0.4;
-        const w = large ? 24 : 16;
-        const h = large ? 48 : 34;
-        const parts = Array.from({ length: count }, (_, i) => ({ dx: i * (w - 2), w, h: h - (i % 2) * 6 }));
-        obstacles.push({ kind: 'cactus', x: width + 10, y: GROUND - h, w: count * (w - 2) + 2, h, parts });
+        // One clump of bamboo, sometimes two side by side; three heights.
+        const count = Math.random() < 0.72 ? 1 : 2;
+        const h = [34, 42, 50][Math.floor(Math.random() * 3)] - (count - 1) * 8;
+        const w = h * BAMBOO_RATIO;
+        const step = w * 0.62;
+        const parts = Array.from({ length: count }, (_, i) => ({ dx: i * step, w, h: h - (i % 2) * 6 }));
+        obstacles.push({ kind: 'bamboo', x: width + 10, y: GROUND - h, w: (count - 1) * step + w, h, parts });
       }
       const minGap = 220 + speed * 0.55;
       nextGap = minGap + Math.random() * 260;
@@ -194,9 +217,10 @@ export function DinoGame() {
       { x: RUNNER_X + 4, y: y + 17, w: RUNNER_W - 8, h: RUNNER_H - 19 },
     ];
     const obstacleBoxes = (o: Obstacle): Box[] =>
-      o.kind === 'bird'
-        ? [{ x: o.x + 4, y: o.y + 4, w: o.w - 8, h: o.h - 8 }]
-        : o.parts.map(p => ({ x: o.x + p.dx + 3, y: GROUND - p.h + 3, w: p.w - 6, h: p.h - 3 }));
+      o.kind === 'samosa'
+        // The pastry triangle only; the wings and dangling feet don't collide.
+        ? [{ x: o.x + o.w * 0.22, y: o.y + flyBob(o) + o.h * 0.18, w: o.w * 0.54, h: o.h * 0.62 }]
+        : o.parts.flatMap(p => STALKS.map(st => ({ x: o.x + p.dx + p.w * st.left + 1, y: GROUND - p.h * (1 - st.top) + 2, w: p.w * (st.right - st.left) - 2, h: p.h * (1 - st.top) - 2 })));
 
     // Eye position on the sprite, in game units.
     const eye = () => ({ x: RUNNER_X + RUNNER_W * 0.78, y: y + RUNNER_H * 0.3 });
@@ -269,7 +293,7 @@ export function DinoGame() {
     const update = (dt: number) => {
       clouds = clouds.map(c => ({ ...c, x: c.x - (state === 'running' ? speed * 0.18 : 12) * dt }));
       clouds.forEach(c => { if (c.x < -50) { c.x = width + Math.random() * 120; c.y = 24 + Math.random() * 50; } });
-      birdTimer += dt;
+      flyTimer += dt;
       if (state === 'over') updateTears(dt);
       if (state !== 'running') return;
 
@@ -282,7 +306,7 @@ export function DinoGame() {
       y = Math.min(GROUND - RUNNER_H, y + vy * dt);
       if (onGround()) vy = 0;
 
-      obstacles.forEach(o => { o.x -= speed * (o.kind === 'bird' ? 1.08 : 1) * dt; });
+      obstacles.forEach(o => { o.x -= speed * (o.kind === 'samosa' ? 1.08 : 1) * dt; });
       obstacles = obstacles.filter(o => o.x + o.w > -20);
       const lastObstacle = obstacles[obstacles.length - 1];
       // A short run-up before the first obstacle.
@@ -298,6 +322,10 @@ export function DinoGame() {
         tears = [];
         tearTimer = 0;
         puddle = 0;
+        // The game only runs after a key press or tap, so browsers allow this to play.
+        jumpSound.pause();
+        gameOverSound.currentTime = 0;
+        gameOverSound.play().catch(() => {});
         if (s > hi) { hi = s; writeHi(hi); }
       }
     };
@@ -318,8 +346,13 @@ export function DinoGame() {
 
       ctx.fillStyle = COLORS.ink;
       obstacles.forEach(o => {
-        if (o.kind === 'bird') drawSprite(ctx, Math.floor(birdTimer * 6) % 2 ? BIRD_UP : BIRD_DOWN, o.x, o.y);
-        else o.parts.forEach(p => drawCactus(ctx, o.x + p.dx, p.w, p.h));
+        if (o.kind === 'samosa') drawSamosa(o);
+        else if (bamboo.complete && bamboo.naturalWidth) {
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          o.parts.forEach(p => ctx.drawImage(bamboo, o.x + p.dx, GROUND - p.h, p.w, p.h));
+          ctx.imageSmoothingEnabled = false;
+        }
       });
 
       if (runner.complete && runner.naturalWidth) {
@@ -377,7 +410,8 @@ export function DinoGame() {
     const frame = (t: number) => {
       const dt = Math.min(0.05, (t - last) / 1000);
       last = t;
-      update(dt);
+      // Small fixed steps so thin bamboo stalks can't slip past the runner between slow frames.
+      for (let left = dt; left > 0; left -= 1 / 120) update(Math.min(left, 1 / 120));
       draw();
       raf = requestAnimationFrame(frame);
     };
@@ -406,6 +440,8 @@ export function DinoGame() {
 
     return () => {
       cancelAnimationFrame(raf);
+      gameOverSound.pause();
+      jumpSound.pause();
       observer.disconnect();
       window.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('keyup', onKeyUp);
@@ -414,5 +450,5 @@ export function DinoGame() {
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="dino-canvas" tabIndex={0} role="img" aria-label="Runner game: help Tushar jump over cacti and birds with space, the up arrow or a tap"/>;
+  return <canvas ref={canvasRef} className="dino-canvas" tabIndex={0} role="img" aria-label="Runner game: help Tushar jump over bamboo and flying samosas with space, the up arrow or a tap"/>;
 }
