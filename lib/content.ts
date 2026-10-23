@@ -1,27 +1,49 @@
 import { articles, categories, type Article } from './articles';
 import { contentProject } from './content-project';
 
-export type TextBlock = { _key: string; _type: string; style?: string; listItem?: string; children?: { _key: string; text: string; marks?: string[] }[]; markDefs?: { _key: string; _type: string; href?: string }[] };
+export type TextBlock = { _key: string; _type: string; style?: string; listItem?: string; level?: number; children?: { _key: string; text: string; marks?: string[] }[]; markDefs?: { _key: string; _type: string; href?: string }[] };
 export type ArticleSeo = { title?: string; description?: string; image?: string; socialTitle?: string; socialDescription?: string; canonicalUrl?: string; noIndex?: boolean };
 export type ArticleExtras = { faq?: { _key: string; question: string; answer: string }[]; keywords?: { focus?: string; related?: string[] }; schema?: { type?: 'Article' | 'BlogPosting' | 'NewsArticle'; includeFaq?: boolean; customJson?: string }; modifiedAt?: string };
 export type OnlineArticle = Article & ArticleExtras & { portableBody?: TextBlock[]; online?: boolean; seo?: ArticleSeo };
 
-export async function fetchPublishedArticles(signal?: AbortSignal): Promise<OnlineArticle[]> {
+let cached: { articles: OnlineArticle[]; expires: number } | undefined;
+let pending: Promise<OnlineArticle[]> | undefined;
+
+export function fetchPublishedArticles(signal?: AbortSignal): Promise<OnlineArticle[]> {
+  if (signal?.aborted) return Promise.reject(new DOMException('Request cancelled', 'AbortError'));
+  const request = cached && cached.expires > Date.now() ? Promise.resolve(cached.articles) : pending || (pending = requestPublishedArticles().then(items => {
+    cached = { articles: items, expires: Date.now() + 10000 }; pending = undefined; return items;
+  }, error => { pending = undefined; throw error; }));
+  return new Promise((resolve, reject) => {
+    const cancel = () => reject(new DOMException('Request cancelled', 'AbortError'));
+    signal?.addEventListener('abort', cancel, { once: true });
+    request.then(items => { signal?.removeEventListener('abort', cancel); resolve(items); }, error => { signal?.removeEventListener('abort', cancel); reject(error); });
+  });
+}
+
+async function requestPublishedArticles(): Promise<OnlineArticle[]> {
   if (!contentProject.projectId) return [];
   const query = '*[_type == "article" && !(_id in path("drafts.**")) && defined(slug.current)] | order(publishedAt desc, title asc){title,"slug":slug.current,excerpt,category,publishedAt,body,faq,keywords,schema,"modifiedAt":_updatedAt,"image":cover.asset->url,"imageAlt":cover.alt,"seo":seo{title,description,socialTitle,socialDescription,canonicalUrl,noIndex,"image":image.asset->url}}';
   const url = new URL(`https://${contentProject.projectId}.api.sanity.io/v2026-10-01/data/query/${contentProject.dataset}`);
   url.searchParams.set('query', query);
   url.searchParams.set('perspective', 'published');
-  const response = await fetch(url, { signal, cache: 'no-store' });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
+  try {
+  const response = await fetch(url, { signal: controller.signal, cache: 'no-store' });
   if (!response.ok) throw new Error('The journal could not connect. Please try again.');
   const data = await response.json();
   return (data.result || []).map((doc: ArticleExtras & {title: string; slug: string; excerpt?: string; category: Article['category']; publishedAt?: string; body?: TextBlock[]; image?: string; imageAlt?: string; seo?: ArticleSeo}) => {
     const body = (doc.body || []).map(block => (block.children || []).map(child => child.text).join('')).join('\n\n');
     // Articles bundled with the site keep their local cover photo, even if the CMS has a different one.
     const local = articles.find(article => article.slug === doc.slug);
-    const cover = local ? { image: local.image, imageAlt: local.imageAlt, seo: doc.seo && { ...doc.seo, image: undefined } } : { image: doc.image || '/images/writing.jpg', imageAlt: doc.imageAlt, seo: doc.seo };
+    const cover = local ? { image: local.image, imageAlt: local.imageAlt, seo: doc.seo } : { image: doc.image || '/images/writing.jpg', imageAlt: doc.imageAlt, seo: doc.seo };
     return { title: doc.title, slug: doc.slug, excerpt: doc.excerpt || '', category: categories.includes(doc.category) ? doc.category : 'Personal notes', date: doc.publishedAt || new Date().toISOString(), ...cover, body, portableBody: doc.body, online: true, faq: doc.faq, keywords: doc.keywords, schema: doc.schema, modifiedAt: doc.modifiedAt, readTime: `${Math.max(1, Math.ceil(body.split(/\s+/).length / 200))} min read`, status: 'published' };
   });
+  } catch (error) {
+    if (controller.signal.aborted) throw new Error('The journal took too long to respond. Please try again.');
+    throw error;
+  } finally { clearTimeout(timeout); }
 }
 
 

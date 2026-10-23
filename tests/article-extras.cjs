@@ -20,6 +20,12 @@ const headings = articleHeadings({ ...article, portableBody: blocks });
 assert.deepEqual(headings.map(h => h.id), ['section-a', 'section-b']);
 const html = renderToStaticMarkup(React.createElement(PortableBody, { blocks }));
 headings.forEach(h => assert.ok(html.includes(`id="${h.id}"`)));
+const nested = renderToStaticMarkup(React.createElement(PortableBody, { blocks: [
+ { _key:'one', _type:'block', listItem:'bullet', level:1, children:[{_key:'a',text:'Parent'}] },
+ { _key:'two', _type:'block', listItem:'number', level:2, children:[{_key:'b',text:'Child'}] },
+ { _key:'three', _type:'block', listItem:'bullet', level:1, children:[{_key:'c',text:'Sibling'}] },
+] }));
+assert.ok(nested.includes('<li>Parent<ol><li>Child</li></ol></li><li>Sibling</li>'));
 assert.equal(articleHeadings({ ...article, body: 'Paragraph\n\n## Heading' })[0].id, 'section-1');
 const other = { ...article, slug: 'other', keywords: {} };
 const match = { ...article, slug: 'match', category: 'Lifestyle' };

@@ -74,7 +74,7 @@ function overlaps(a: Box, b: Box) {
 }
 
 function readHi() {
-  try { return Number(localStorage.getItem(HI_KEY)) || 0; } catch { return 0; }
+  try { const value = Number(localStorage.getItem(HI_KEY)); return Number.isFinite(value) && value >= 0 ? Math.floor(value) : 0; } catch { return 0; }
 }
 function writeHi(value: number) {
   try { localStorage.setItem(HI_KEY, String(value)); } catch { /* storage unavailable */ }
@@ -82,6 +82,7 @@ function writeHi(value: number) {
 
 export function DinoGame() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const statusRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -111,6 +112,10 @@ export function DinoGame() {
     let lastMilestone = 0;
     let raf = 0;
     let last = performance.now();
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let paused = false;
+    let assetFailed = false;
+    const announce = (message: string) => { if (statusRef.current) statusRef.current.textContent = message; };
     const font = getComputedStyle(document.body).fontFamily;
     const runner = new Image();
     runner.src = assetPath(RUNNER_SRC);
@@ -127,6 +132,7 @@ export function DinoGame() {
     const bamboo = new Image();
     bamboo.src = assetPath(BAMBOO_SRC);
     const samosa = Object.fromEntries(Object.entries(SAMOSA_SRC).map(([key, src]) => { const img = new Image(); img.src = assetPath(src); return [key, img]; })) as Record<keyof typeof SAMOSA_SRC, HTMLImageElement>;
+    const assetsReady = () => [runner, bamboo, ...Object.values(samosa)].every(img => img.complete && img.naturalWidth > 0);
     // Gentle bob, offset per samosa so two never move in sync.
     const flyBob = (o: Obstacle) => Math.sin(flyTimer * 5 + o.x * 0.02) * 1.6;
 
@@ -155,6 +161,7 @@ export function DinoGame() {
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
       const dpr = window.devicePixelRatio || 1;
       // Fill the height, but never show less than MIN_WIDTH of track; spare height becomes sky.
       const scale = Math.min(rect.height / HEIGHT, rect.width / MIN_WIDTH);
@@ -175,17 +182,21 @@ export function DinoGame() {
       state = 'running';
       y = GROUND - RUNNER_H;
       vy = 0;
+      fastFall = false;
+      legTimer = 0;
       speed = START_SPEED;
       distance = 0;
       obstacles = [];
       nextGap = 360;
       lastMilestone = 0;
       flashUntil = 0;
+      announce('Game started. Press space, Enter, up arrow, or tap to jump.');
     };
 
     const press = () => {
-      if (state === 'idle') { reset(); jump(); return; }
-      if (state === 'over') { if (performance.now() - overAt > 450) reset(); return; }
+      if (!assetsReady()) { announce(assetFailed ? 'Game images could not load. Refresh the page to try again.' : 'Game images are loading. Please try again in a moment.'); return; }
+      if (state === 'idle') { reset(); jump(); wake(); return; }
+      if (state === 'over') { if (performance.now() - overAt > 450) { reset(); wake(); } return; }
       if (onGround()) jump();
     };
     // Releasing early cuts the jump short, like the original.
@@ -294,7 +305,7 @@ export function DinoGame() {
       clouds = clouds.map(c => ({ ...c, x: c.x - (state === 'running' ? speed * 0.18 : 12) * dt }));
       clouds.forEach(c => { if (c.x < -50) { c.x = width + Math.random() * 120; c.y = 24 + Math.random() * 50; } });
       flyTimer += dt;
-      if (state === 'over') updateTears(dt);
+      if (state === 'over' && !reducedMotion.matches) updateTears(dt);
       if (state !== 'running') return;
 
       speed = Math.min(MAX_SPEED, speed + 7 * dt);
@@ -319,6 +330,7 @@ export function DinoGame() {
       if (obstacles.some(o => obstacleBoxes(o).some(b => mine.some(d => overlaps(d, b))))) {
         state = 'over';
         overAt = performance.now();
+        announce(`Game over. Your score is ${s}. Press space, Enter, or tap to restart.`);
         tears = [];
         tearTimer = 0;
         puddle = 0;
@@ -387,7 +399,7 @@ export function DinoGame() {
       if (state === 'idle') {
         ctx.fillStyle = COLORS.text;
         ctx.font = `500 14px ${font}`;
-        ctx.fillText(touch ? 'Tap to start' : 'Press space or tap to start', width / 2, 70);
+        ctx.fillText(assetFailed ? 'Images unavailable. Refresh to retry.' : !assetsReady() ? 'Loading game…' : touch ? 'Tap to start' : 'Press space or tap to start', width / 2, 70);
       } else if (state === 'over') {
         ctx.fillStyle = COLORS.ink;
         ctx.font = '600 18px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
@@ -408,33 +420,48 @@ export function DinoGame() {
     };
 
     const frame = (t: number) => {
+      raf = 0;
+      if (document.hidden || paused) return;
       const dt = Math.min(0.05, (t - last) / 1000);
       last = t;
       // Small fixed steps so thin bamboo stalks can't slip past the runner between slow frames.
       for (let left = dt; left > 0; left -= 1 / 120) update(Math.min(left, 1 / 120));
       draw();
-      raf = requestAnimationFrame(frame);
+      if (state === 'running' || !reducedMotion.matches) raf = requestAnimationFrame(frame);
     };
+    const wake = () => {
+      if (!raf && !document.hidden && !paused) { last = performance.now(); raf = requestAnimationFrame(frame); }
+    };
+    const pause = () => { if (!paused && state === 'running') announce('Game paused. Return to the game to continue.'); paused = true; fastFall = false; release(); cancelAnimationFrame(raf); raf = 0; jumpSound.pause(); gameOverSound.pause(); };
+    const resume = () => { const wasPaused = paused; paused = false; if (wasPaused && state === 'running') announce('Game resumed. Press space, Enter, up arrow, or tap to jump.'); wake(); };
+    const onVisibility = () => { if (document.hidden) pause(); else resume(); };
 
     const ignoreTarget = (target: EventTarget | null) =>
       target instanceof HTMLElement && target !== canvas && (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A'].includes(target.tagName));
     const onKeyDown = (e: KeyboardEvent) => {
       if (ignoreTarget(e.target)) return;
-      if (e.key === ' ' || e.key === 'ArrowUp') { e.preventDefault(); if (!e.repeat) press(); }
+      if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'Enter') { e.preventDefault(); if (!e.repeat) press(); }
       else if (e.key === 'ArrowDown') { e.preventDefault(); fastFall = true; }
     };
     const onKeyUp = (e: KeyboardEvent) => {
-      if (e.key === ' ' || e.key === 'ArrowUp') release();
+      if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'Enter') release();
       else if (e.key === 'ArrowDown') fastFall = false;
     };
-    const onPointerDown = (e: PointerEvent) => { e.preventDefault(); press(); };
+    const onPointerDown = (e: PointerEvent) => { e.preventDefault(); canvas.focus({ preventScroll: true }); canvas.setPointerCapture(e.pointerId); resume(); press(); };
 
     const observer = new ResizeObserver(resize);
+    [runner, bamboo, ...Object.values(samosa)].forEach(img => { img.onload = () => draw(); img.onerror = () => { assetFailed = true; draw(); }; });
     observer.observe(canvas);
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
     canvas.addEventListener('pointerdown', onPointerDown);
     canvas.addEventListener('pointerup', release);
+    canvas.addEventListener('pointercancel', release);
+    canvas.addEventListener('lostpointercapture', release);
+    window.addEventListener('blur', pause);
+    window.addEventListener('focus', resume);
+    document.addEventListener('visibilitychange', onVisibility);
+    reducedMotion.addEventListener('change', wake);
     resize();
     raf = requestAnimationFrame(frame);
 
@@ -442,13 +469,20 @@ export function DinoGame() {
       cancelAnimationFrame(raf);
       gameOverSound.pause();
       jumpSound.pause();
+      [runner, bamboo, ...Object.values(samosa)].forEach(img => { img.onload = null; img.onerror = null; });
       observer.disconnect();
       window.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('keyup', onKeyUp);
       canvas.removeEventListener('pointerdown', onPointerDown);
       canvas.removeEventListener('pointerup', release);
+      canvas.removeEventListener('pointercancel', release);
+      canvas.removeEventListener('lostpointercapture', release);
+      window.removeEventListener('blur', pause);
+      window.removeEventListener('focus', resume);
+      document.removeEventListener('visibilitychange', onVisibility);
+      reducedMotion.removeEventListener('change', wake);
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="dino-canvas" tabIndex={0} role="img" aria-label="Runner game: help Tushar jump over bamboo and flying samosas with space, the up arrow or a tap"/>;
+  return <><canvas ref={canvasRef} className="dino-canvas" tabIndex={0} role="button" aria-label="Runner game: help Tushar jump over bamboo and flying samosas" aria-describedby="runner-instructions runner-status" aria-keyshortcuts="Space Enter ArrowUp ArrowDown"/><p id="runner-instructions" className="visually-hidden">Press space, Enter, the up arrow, or tap to start and jump. Down arrow drops faster. Tab leaves the game.</p><p ref={statusRef} id="runner-status" className="visually-hidden" role="status" aria-live="polite">Game ready. Press space, Enter, or tap to start.</p></>;
 }

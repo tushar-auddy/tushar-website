@@ -17,5 +17,5 @@ export default async function ArticlePage({params}: {params: Promise<{slug:strin
  const {slug}=await params;const article=articles.find(a=>a.slug===slug);if(!article)notFound();
  const image=new URL(assetPath(article.image),new URL(siteUrl).origin).href;
  const schema=JSON.stringify(articleSchema(article,`${siteUrl}/journal/${slug}/`,image)).replace(/</g,'\\u003c');
- return <main id="main"><script id="article-structured-data" type="application/ld+json" dangerouslySetInnerHTML={{__html:schema}}/><PublishedReader initialArticle={article}/></main>;
+ return <main id="main"><script id="article-structured-data" type="application/ld+json" dangerouslySetInnerHTML={{__html:schema}}/><PublishedReader key={article.slug} initialArticle={article}/></main>;
 }

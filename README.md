@@ -21,11 +21,11 @@ The workflow supplies `NEXT_PUBLIC_BASE_PATH=/tushar-website` and `NEXT_PUBLIC_S
 
 ### Authoring
 
-- Open `/studio/` to compose, preview, save drafts, and publish **on the current device**. These posts use localStorage; they are not shared with other visitors and are not a secure admin CMS. Browser storage can be cleared, so download JSON backups regularly. Backups can be restored using Import backup.
-- Export a story as Markdown for safekeeping or use in another CMS.
-- To publish site-wide, add the article to `lib/articles.ts` and rebuild/redeploy. The static article pages, journal, category counts, and sitemap update automatically. Set `sample: true` only for illustrative starter stories. For a real published story omit `sample` and set `status: 'published'`.
-- The six initial articles are clearly marked illustrative samples and do not represent Tushar's previously published work. Replace them with his own articles and photographs before public launch.
-- Existing content does not use a database. A future CMS integration should replace the article data source and add authenticated authoring.
+- Open the website’s **Writing room** at `/admin/`, then **Open the editor** to sign in to Sanity. Drafts stay private until you publish them.
+- The four author-supplied articles are stored in Sanity and have static snapshots in `lib/published-articles.json`. Those snapshots provide full HTML article pages and offline fallbacks. The reader refreshes published content when opened.
+- Related articles and contents lists are automatic. FAQ, keywords, schema, and SEO/sharing fields are editable in the CMS.
+- The original `/studio/` route remains a browser-only scratchpad with JSON backup and Markdown export. Its device publications are not shared with other visitors.
+- New CMS posts appear through `/read/?story=...` without a deployment. Static snapshots and metadata need a rebuild to reflect later CMS changes in the initial HTML; JavaScript-free social crawlers cannot read browser-applied metadata.
 
 ## Customise
 
@@ -41,5 +41,8 @@ Photography is downloaded from Unsplash and stored locally under `public/images/
 
 ```sh
 npm run typecheck
+node tests/site-audit.cjs
+node tests/article-extras.cjs
 npm run build
+node tests/export-check.cjs
 ```

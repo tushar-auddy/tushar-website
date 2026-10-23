@@ -1,26 +1,31 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { usePageScroll } from '@/lib/use-page-scroll';
 import { ArrowUpRight, ArrowUp, Menu, X, Linkedin, Feather } from 'lucide-react';
 
 export function Header() {
   const [open, setOpen] = useState(false);
   const [hash, setHash] = useState('');
   const [compact, setCompact] = useState(false);
+  const [mobile, setMobile] = useState(false);
   const path = usePathname();
   const headerRef = useRef<HTMLElement>(null);
   const menuRef = useRef<HTMLButtonElement>(null);
 
+  usePageScroll(useCallback((_, scrollY) => {
+    setCompact(previous => previous ? scrollY > 24 : scrollY > 96);
+    setHash(window.location.hash);
+  }, []));
+
+  useEffect(() => { setOpen(false); }, [path]);
   useEffect(() => {
-    const update = () => {
-      const scrollY = window.scrollY;
-      // Separate thresholds prevent the changing header height from making it flicker.
-      setCompact(previous => previous ? scrollY > 24 : scrollY > 96);
-    };
+    const media = window.matchMedia('(max-width: 760px)');
+    const update = () => { setMobile(media.matches); if (!media.matches) setOpen(false); };
     update();
-    window.addEventListener('scroll', update, { passive: true });
-    return () => window.removeEventListener('scroll', update);
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
   }, []);
 
   useEffect(() => {
@@ -35,14 +40,16 @@ export function Header() {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') { setOpen(false); menuRef.current?.focus(); }
     };
-    const onPointer = (event: PointerEvent) => {
+    const onPointer = (event: Event) => {
       if (!headerRef.current?.contains(event.target as Node)) setOpen(false);
     };
     document.addEventListener('keydown', onKey);
     document.addEventListener('pointerdown', onPointer);
+    document.addEventListener('focusin', onPointer);
     return () => {
       document.removeEventListener('keydown', onKey);
       document.removeEventListener('pointerdown', onPointer);
+      document.removeEventListener('focusin', onPointer);
     };
   }, [open]);
 
@@ -58,7 +65,7 @@ export function Header() {
         <span className="wordmark">Tushar Auddy<span>.</span></span>
       </Link>
       <button className="menu-toggle icon-button" ref={menuRef} onClick={() => setOpen(!open)} aria-label={open ? 'Close navigation' : 'Open navigation'} aria-expanded={open} aria-controls="primary-navigation">{open ? <X size={23}/> : <Menu size={23}/>}</button>
-      <nav className={open ? 'navigation open' : 'navigation'} id="primary-navigation" aria-label="Main navigation">
+      <nav className={open ? 'navigation open' : 'navigation'} inert={mobile && !open} id="primary-navigation" aria-label="Main navigation">
         <Link href="/" className={homeActive ? 'active' : ''} aria-current={homeActive ? 'page' : undefined} onClick={() => close()}>Home</Link>
         <Link href="/#about" className={aboutActive ? 'active' : ''} aria-current={aboutActive ? 'location' : undefined} onClick={() => close('#about')}>About me</Link>
         <Link href="/journal/" className={journalActive ? 'active' : ''} aria-current={journalActive ? 'page' : undefined} onClick={() => close()}>The journal</Link>
@@ -68,34 +75,23 @@ export function Header() {
   </header>;
 }
 export function ScrollTop() {
-  const [progress, setProgress] = useState(0);
+  const progressRef = useRef<SVGCircleElement>(null);
   const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const update = () => {
-      const length = document.documentElement.scrollHeight - window.innerHeight;
-      setProgress(length > 0 ? Math.min(1, window.scrollY / length) : 0);
-      setVisible(window.scrollY > 480);
-    };
-    update();
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    return () => {
-      window.removeEventListener('scroll', update);
-      window.removeEventListener('resize', update);
-    };
-  }, []);
+  const ring = 2 * Math.PI * 21;
+  usePageScroll(useCallback((progress, scrollY) => {
+    if (progressRef.current) progressRef.current.style.strokeDashoffset = String(2 * Math.PI * 21 * (1 - progress));
+    setVisible(scrollY > 480);
+  }, []));
 
   const toTop = () => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
   };
   // Progress ring circumference for r=21.
-  const ring = 2 * Math.PI * 21;
 
   return <button type="button" className={`scroll-top${visible ? ' is-visible' : ''}`} onClick={toTop} aria-label="Scroll back to top" tabIndex={visible ? 0 : -1}>
     <svg viewBox="0 0 44 44" aria-hidden="true">
-      <circle className="scroll-top-progress" cx="22" cy="22" r="21" strokeDasharray={ring} strokeDashoffset={ring * (1 - progress)}/>
+      <circle ref={progressRef} className="scroll-top-progress" cx="22" cy="22" r="21" strokeDasharray={ring} strokeDashoffset={ring}/>
     </svg>
     <ArrowUp size={16} strokeWidth={1.8}/>
   </button>;
@@ -123,11 +119,10 @@ export function Footer() {
     </nav>
     <div className="container site-footer-bottom">
       <p>© {new Date().getFullYear()} Tushar Auddy <span className="site-footer-sep">|</span> Powered by <a className="site-footer-credit" href="https://dcampaign.com" target="_blank" rel="noopener noreferrer">DCampaign Digital</a></p>
-      <a href="#top" className="site-footer-top" onClick={e => {e.preventDefault(); window.scrollTo({top: 0, behavior: 'smooth'});}}>Back to top <span><ArrowUp size={13}/></span></a>
+      <a href="#top" className="site-footer-top" onClick={e => {e.preventDefault(); window.scrollTo({top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});}}>Back to top <span><ArrowUp size={13}/></span></a>
     </div>
   </footer></>;
 }
 export function Contact({ light = false }: { light?: boolean }) {
   return <section className={`contact-section${light ? ' contact-light' : ''}`} id="contact"><div className="container contact-inner"><div><div className="eyebrow light"><span/> A GOOD STORY STARTS WITH A CONVERSATION</div><h2>Have something in mind?<br/>Let’s find the right <em>words.</em></h2><p>For writing opportunities, collaborations, or just a thoughtful hello.</p></div><a className="contact-circle" href="mailto:auddytushar@gmail.com" aria-label="Email Tushar Auddy"><ArrowUpRight size={37} strokeWidth={1.3}/></a><a className="contact-email" href="mailto:auddytushar@gmail.com">auddytushar@gmail.com <ArrowUpRight size={17}/></a></div></section>;
 }
-

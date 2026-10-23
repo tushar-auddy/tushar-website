@@ -1,0 +1,31 @@
+:root{--motion-ease:cubic-bezier(.22,1,.36,1)}
+.header.restored-header{transition:box-shadow .24s ease,background .24s ease}
+.restored-header .nav-inner,.restored-header .wordmark,.restored-header .brand-monogram{transition-timing-function:var(--motion-ease)}
+.article-card{animation-duration:.36s;animation-timing-function:var(--motion-ease)}
+.card-image-link img{transition:transform .45s var(--motion-ease)}
+.primary-button,.outline-button,.icon-button{transition:background-color .2s ease,color .2s ease,border-color .2s ease,transform .2s var(--motion-ease)}
+.primary-button:active,.outline-button:active{transform:translateY(1px)}
+.search-box{animation:control-reveal .18s var(--motion-ease) both}
+@keyframes control-reveal{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+.reading-progress{width:100%;transform:scaleX(0);transform-origin:left center;transition:none;pointer-events:none}
+.scroll-top-progress{transition:none}
+.reading-header h1,.card-title h3,.reading-deck,.reading-body{overflow-wrap:anywhere}
+.reading-byline{flex-wrap:wrap}
+.reading-byline button{min-height:44px;min-width:96px;justify-content:center}
+.reading-body [id]{scroll-margin-top:12px}
+.not-found h1{font-size:clamp(32px,5vw,55px);overflow-wrap:anywhere}
+.article-faq details[open]>p{animation:control-reveal .2s ease both}
+.visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+@media(max-width:760px){
+ .restored-header .navigation{display:flex;visibility:hidden;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .18s ease,transform .22s var(--motion-ease),visibility 0s linear .22s}
+ .restored-header .navigation.open{visibility:visible;opacity:1;transform:none;pointer-events:auto;transition-delay:0s}
+ .menu-toggle,.search-toggle{min-width:44px;min-height:44px;align-items:center;justify-content:center}
+ .filters{min-width:0}
+ .filters button{min-height:40px}
+ .search-box input{font-size:16px;min-height:32px}
+ .filter-bar{align-items:center}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto!important}
+ *,*::before,*::after{animation:none!important;transition:none!important}
+}
